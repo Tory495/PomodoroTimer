@@ -1,0 +1,41 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Roboto", sans-serif;
+}
+
+#container {
+	margin: 0 auto;
+	width: 50%;
+	border: 1px solid black;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	background-color: tomato;
+}
+
+#timer {
+	margin: 50px 150px;
+	display: flex;
+	justify-content: center;
+	background-color: white;
+	border-radius: 5px;
+}
+
+#timer > span {
+	margin: 0 10px 0 10px;
+	font-size: 30px;
+}
+
+.my-button {
+	font-size: 20px;
+	padding: 10px 0;
+	color: white;
+	background-color: black;
+	border-radius: 4px;
+	cursor: pointer;
+	border: none;
+}
+
+
