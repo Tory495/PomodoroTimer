@@ -42,35 +42,34 @@ let startButton = document.getElementById("start-button");
 startButton.onclick = start;
 
 function start() {
-	let intervalId = setInterval(update, 1000);
-	startButton.textContent = "ОСТАНОВИСЬ";
+	let intervalId = setInterval(update, 10);
+	startButton.textContent = "ОСТАНОВИТЬ";
 	// TODO: Переделать эту дичь
-	startButton.onclick = () => {
-		clearInterval(intervalId);
-		startButton.textContent = "ПРОДОЛЖАЕМ";
-		startButton.onclick = start;
+	startButton.onclick = function() {
+		stop(this, intervalId);
 	};
 }
+
 
 function update() {
 	let minutesSpan = document.getElementById("minutes");
 	let secondsSpan = document.getElementById("seconds");
-
+	
 	timer.seconds += 1;
+	addZero(minutesSpan, "minutes");
+	addZero(secondsSpan, "seconds");
+}
 
-	if (timer.seconds < 10) {
-		secondsSpan.textContent = "0" + timer.seconds;
+function addZero(span, value) {
+	if (timer[value] < 10) {
+		span.textContent = "0" + timer[value];
 	} else {
-		secondsSpan.textContent = timer.seconds;
-	}
-
-	if (timer.minutes < 10) {
-		minutesSpan.textContent = "0" + timer.minutes;
-	} else {
-		minutesSpan.textContent = timer.minutes;
+		span.textContent = timer[value];
 	}
 }
 
-function stop(intervalId) {
+function stop(button, intervalId) {
 	clearInterval(intervalId);
+	button.textContent = "ПРОДОЛЖИТЬ";
+	button.onclick = start;
 }
