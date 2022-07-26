@@ -10,14 +10,31 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<h1 align="center" style="margin: 20px 0;">Помидор (В разработке с 25.07.22)</h1>
-	<div id="container">
+	<h1 align="center" style="margin-top: 20px">Помидор (В разработке с 25.07.22)</h1>
+	<div class="container">
 		<div id="timer">
-			<span id="minutes">00</span>
+			<span id="minutes">25</span>
 			<span>:</span>
 			<span id="seconds">00</span>
 		</div>
 		<button class="my-button" id="start-button">ЗАПУСТИТЬ</button>
+	</div>
+	<div class="container">
+		<div id="wrapper">
+			<div class="flex-item">
+				<label for="work-time">Время работы (мин.)</label>
+				<input type="text" id="work-time">
+			</div>
+			<div class="flex-item">
+				<label for="short-break-time">Время короткого отдыха (мин.)</label>
+				<input type="text" id="short-break-time"></div>
+			<div class="flex-item">
+				<label for="long-break-time">Время длинного отдыха (мин.)</label>
+				<input type="text" id="long-break-time">
+			</div>
+
+		</div>
+		<button class="my-button" id="confirm-button" onclick="confirmButtonClick()">ПОДТВЕРДИТЬ</button>
 	</div>
 	<script src="script.js"></script>
 </body>

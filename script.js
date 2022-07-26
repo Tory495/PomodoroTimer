@@ -23,7 +23,8 @@ class PomodoroTimer {
 	set seconds(value) {
 		if (value >= 60) {
 			this._seconds = 0;
-			this._minutes += 1;
+		} else if (value < 0) {
+			this._seconds = 59;
 		} else {
 			this._seconds = value;
 		}
@@ -36,16 +37,21 @@ class PomodoroTimer {
 	}
 }
 
-let timer = new PomodoroTimer(0, 0);
+let workTime = 25;
+let shortBreakTime = 5;
+let longBreakTime = 40;
+let timer = new PomodoroTimer(workTime, 0);
 let startButton = document.getElementById("start-button");
+startButton.onclick = startButtonClick;
+// flag (true = работа / false = отдых)
+let flag = true;
 
-startButton.onclick = start;
 
-function start() {
+function startButtonClick() {
+
 	let intervalId = setInterval(update, 10);
-	startButton.textContent = "ОСТАНОВИТЬ";
-	// TODO: Переделать эту дичь
-	startButton.onclick = function() {
+	this.textContent = "ОСТАНОВИТЬ";
+	this.onclick = function() {
 		stop(this, intervalId);
 	};
 }
@@ -54,8 +60,23 @@ function start() {
 function update() {
 	let minutesSpan = document.getElementById("minutes");
 	let secondsSpan = document.getElementById("seconds");
-	
-	timer.seconds += 1;
+	if (timer.seconds === 0 && timer.minutes === 0) {
+		flag = !flag;
+		let container = document.getElementsByClassName("container")[0];
+		if (!flag) {
+			container.style.background = 'lightgreen';
+			timer.minutes = shortBreakTime;
+		} else {
+			container.style.background = 'tomato';
+			timer.minutes = workTime;
+		}	
+	}
+	if (timer.seconds === 0) {
+		timer.minutes--;
+	}
+
+	timer.seconds--;
+
 	addZero(minutesSpan, "minutes");
 	addZero(secondsSpan, "seconds");
 }
@@ -71,5 +92,25 @@ function addZero(span, value) {
 function stop(button, intervalId) {
 	clearInterval(intervalId);
 	button.textContent = "ПРОДОЛЖИТЬ";
-	button.onclick = start;
+	button.onclick = startButtonClick;
+}
+
+// TODO: сделать валидацию вводимых цифр в инпутах
+function validateNumbers() {
+
+}
+
+function confirmButtonClick() {
+	workTime = document.getElementById("work-time").value;
+	shortBreakTime = document.getElementById("short-break-time").value;
+	longBreakTime = document.getElementById("long-break-time").value;
+	// TODO: сделать правильную логику смены времени (блокировать кнопку подтвердить)
+	// на время работы таймера (пока он не остановлен без продолжения)
+	let minutesSpan = document.getElementById("minutes");
+	if (flag) {
+		minutesSpan.textContent = workTime;
+		timer.minutes = workTime;
+
+	}
+	addZero(minutesSpan, "minutes");
 }
