@@ -37,6 +37,7 @@ class PomodoroTimer {
 	}
 }
 
+
 let workTime = 25;
 let shortBreakTime = 5;
 let longBreakTime = 40;
@@ -46,13 +47,11 @@ startButton.onclick = startButtonClick;
 // flag (true = работа / false = отдых)
 let flag = true;
 
-
 function startButtonClick() {
-
-	let intervalId = setInterval(update, 10);
-	this.textContent = "ОСТАНОВИТЬ";
+	let intervalId = setInterval(update, 1000);
+	this.textContent = "ПАУЗА";
 	this.onclick = function() {
-		stop(this, intervalId);
+		stopButtonClick(this, intervalId);
 	};
 }
 
@@ -63,6 +62,7 @@ function update() {
 	if (timer.seconds === 0 && timer.minutes === 0) {
 		flag = !flag;
 		let container = document.getElementsByClassName("container")[0];
+		let sound = new Audio("bell.wav");
 		if (!flag) {
 			container.style.background = 'lightgreen';
 			timer.minutes = shortBreakTime;
@@ -70,6 +70,7 @@ function update() {
 			container.style.background = 'tomato';
 			timer.minutes = workTime;
 		}	
+		sound.play();
 	}
 	if (timer.seconds === 0) {
 		timer.minutes--;
@@ -89,7 +90,7 @@ function addZero(span, value) {
 	}
 }
 
-function stop(button, intervalId) {
+function stopButtonClick(button, intervalId) {
 	clearInterval(intervalId);
 	button.textContent = "ПРОДОЛЖИТЬ";
 	button.onclick = startButtonClick;
