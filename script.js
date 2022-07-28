@@ -1,7 +1,12 @@
 class PomodoroTimer {
-	constructor(minutes, seconds) {
-		this._minutes = minutes;
-		this._seconds = seconds;
+	constructor() {
+		
+		this._studyTime = 25;
+		this._shortBreakTime = 5;
+		this._longBreakTime = 15;
+		this._minutes = this._studyTime;
+		this._seconds = 0;
+		this._flag = true;
 	}
 
 	get minutes() {
@@ -30,6 +35,42 @@ class PomodoroTimer {
 		}
 	}
 
+	get studyTime() {
+		return this._studyTime;
+	}
+
+	set studyTime(value) {
+		if (value > 60) {
+			this._studyTime = 60;
+		} else if (value < 5) {
+			this._studyTime = 5;
+		} else {
+			this._studyTime = value;
+		}
+	}
+
+	get shortBreakTime() {
+		return this._shortBreakTime;
+	}
+
+	set shortBreakTime(value) {
+		if (value > 60) {
+			this._shortBreakTime = 60;
+		} else if (value < 5) {
+			this._shortBreakTime = 5;
+		} else {
+			this._shortBreakTime = value;
+		}
+	}
+
+	get flag() {
+		return this._flag;
+	}
+
+	set flag(value) {
+		this._flag = value;
+	}
+
 	[Symbol.toStringTag] = "PomodoroTimer";
 
 	toString() {
@@ -38,37 +79,49 @@ class PomodoroTimer {
 }
 
 
-let workTime = 25;
-let shortBreakTime = 5;
-let longBreakTime = 40;
-let timer = new PomodoroTimer(workTime, 0);
-let startButton = document.getElementById("start-button");
-startButton.onclick = startButtonClick;
-// flag (true = работа / false = отдых)
-let flag = true;
+let timer = new PomodoroTimer();
 
-function startButtonClick() {
-	let intervalId = setInterval(update, 1000);
-	this.textContent = "ПАУЗА";
-	this.onclick = function() {
-		stopButtonClick(this, intervalId);
+let minutesSpan = document.getElementById("minutes");
+let secondsSpan = document.getElementById("seconds");
+
+addZero(minutesSpan, "minutes");
+addZero(secondsSpan, "seconds");
+
+// TODO: реализовать длинный перерыв
+// flag (true = учеба / false = отдых)
+
+function startButtonClick(startButton) {
+	// Логика работы таймера
+	let intervalId = setInterval(update, 10);
+	// Изменение текста и события кнопки старта
+	startButton.textContent = "ПАУЗА";
+	startButton.onclick = function() {
+		pauseButtonClick(this, intervalId);
 	};
+	// Отключение кнопки "Подтвердить"
+	let confirmButton = document.getElementById("confirm-button");
+	confirmButton.disabled = true;
+	// Включение кнопки "Остановить"
+	let stopButton = document.getElementById("stop-button");
+	stopButton.disabled = false;
+	stopButton.onclick = function() {
+		stopButtonClick(this, intervalId, startButton, confirmButton);
+	};
+
 }
 
 
 function update() {
-	let minutesSpan = document.getElementById("minutes");
-	let secondsSpan = document.getElementById("seconds");
 	if (timer.seconds === 0 && timer.minutes === 0) {
-		flag = !flag;
+		timer.flag = !timer.flag;
 		let container = document.getElementsByClassName("container")[0];
 		let sound = new Audio("bell.wav");
-		if (!flag) {
-			container.style.background = 'lightgreen';
-			timer.minutes = shortBreakTime;
-		} else {
+		if (timer.flag) {
 			container.style.background = 'tomato';
-			timer.minutes = workTime;
+			timer.minutes = timer.studyTime;
+		} else {
+			container.style.background = 'lightgreen';
+			timer.minutes = timer.shortBreakTime;
 		}	
 		sound.play();
 	}
@@ -90,28 +143,56 @@ function addZero(span, value) {
 	}
 }
 
-function stopButtonClick(button, intervalId) {
+function pauseButtonClick(button, intervalId) {
 	clearInterval(intervalId);
 	button.textContent = "ПРОДОЛЖИТЬ";
-	button.onclick = startButtonClick;
+	button.onclick = function () {
+		startButtonClick(this);
+	};
 }
 
-// TODO: сделать валидацию вводимых цифр в инпутах
-function validateNumbers() {
+function stopButtonClick(button, intervalId, startButton, confirmButton) {
+	clearInterval(intervalId);
+	button.disabled = true;
+	confirmButton.disabled = false;
+	startButton.textContent = "ЗАПУСТИТЬ";
+	startButton.onclick = function() {
+		startButtonClick(this);
+	};
+	timer.minutes = timer.studyTime;
+	timer.flag = true;
+	timer.seconds = 0;
 
+	addZero(minutesSpan, "minutes");
+	addZero(secondsSpan, "seconds");
+}
+
+function validateNumber(input) {
+	if (input.value.toUpperCase() !== input.value.toLowerCase()) {
+		input.value = "";
+	}
+	if (parseInt(input.value) >= 60) {
+		input.value = 59;
+	} else if (parseInt(input.value) < 5) {
+		input.value = 5;
+	}
 }
 
 function confirmButtonClick() {
-	workTime = document.getElementById("work-time").value;
-	shortBreakTime = document.getElementById("short-break-time").value;
-	longBreakTime = document.getElementById("long-break-time").value;
-	// TODO: сделать правильную логику смены времени (блокировать кнопку подтвердить)
-	// на время работы таймера (пока он не остановлен без продолжения)
-	let minutesSpan = document.getElementById("minutes");
-	if (flag) {
-		minutesSpan.textContent = workTime;
-		timer.minutes = workTime;
-
+	let studyTime = document.getElementById("study-time").value;
+	let shortBreakTime = document.getElementById("short-break-time").value;
+	let longBreakTime = document.getElementById("long-break-time").value;
+	if (!studyTime || !shortBreakTime || !longBreakTime) {
+		alert("Заполните время");
+		return undefined;
+	}
+	if (timer.flag && studyTime) {
+		minutesSpan.textContent = studyTime;
+		timer.studyTime = studyTime;
+		timer.minutes = timer.studyTime;
+	}
+	if (shortBreakTime) {
+		timer.shortBreakTime = shortBreakTime;
 	}
 	addZero(minutesSpan, "minutes");
 }

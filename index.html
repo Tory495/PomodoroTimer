@@ -13,27 +13,27 @@
 	<h1 align="center" style="margin-top: 20px">Помидор (В разработке с 25.07.22)</h1>
 	<div class="container">
 		<div id="timer">
-			<span id="minutes">25</span>
+			<span id="minutes">--</span>
 			<span>:</span>
-			<span id="seconds">00</span>
+			<span id="seconds">--</span>
 		</div>
 		<div id="button-container">
-			<button class="my-button" id="start-button">ЗАПУСТИТЬ</button>
-			<button class="my-button" id="stop-button" onclick="foo()">ОСТАНОВИТЬ</button>
+			<button class="my-button" id="start-button" onclick="startButtonClick(this)">ЗАПУСТИТЬ</button>
+			<button class="my-button" id="stop-button" disabled>ОСТАНОВИТЬ</button>
 		</div>
 	</div>
 	<div class="container">
 		<div id="wrapper">
 			<div class="flex-item">
-				<label for="work-time">Время работы (мин.)</label>
-				<input type="text" id="work-time">
+				<label for="study-time">Время учебы (мин.)</label>
+				<input type="text" id="study-time" value="25" oninput="validateNumber(this)">
 			</div>
 			<div class="flex-item">
 				<label for="short-break-time">Время короткого отдыха (мин.)</label>
-				<input type="text" id="short-break-time"></div>
+				<input type="text" id="short-break-time" value="5" oninput="validateNumber(this)"></div>
 			<div class="flex-item">
 				<label for="long-break-time">Время длинного отдыха (мин.)</label>
-				<input type="text" id="long-break-time">
+				<input type="text" id="long-break-time" value="15" oninput="validateNumber(this)">
 			</div>
 
 		</div>
